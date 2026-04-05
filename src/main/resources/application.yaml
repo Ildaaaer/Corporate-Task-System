@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 123
+    url: jdbc:postgresql://localhost:5432/ToDo
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+token:
+  signing:
+    key: a8F2kLm9QwX7zP4nR1vB6cD3yT5uH8jK2mN0sE4rW9xC6qZ1
