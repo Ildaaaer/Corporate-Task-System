@@ -5,11 +5,13 @@ import com.example.auth.dto.SignInRequest;
 import com.example.auth.dto.SignUpRequest;
 import com.example.auth.entity.Role;
 import com.example.auth.entity.User;
+import com.example.auth.exceptions.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 
@@ -31,12 +33,13 @@ public class AuthService {
     }
 
     // Регистрация пользователя
+    @Transactional
     public JwtAuthenticationResponse signUp(SignUpRequest signUpRequest) {
         String username = normalizeUsername(signUpRequest.getUsername());
         String email = normalizeEmail(signUpRequest.getEmail());
 
         if(!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
-            throw new IllegalArgumentException("Пароли не совпадают");
+            throw new BadRequestException("Passwords do not match");
         }
         var user = User.builder()
                 .username(username)
@@ -52,9 +55,11 @@ public class AuthService {
 
     // Аутентификация пользователя
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
+        String username = normalizeUsername(signInRequest.getUsername());
 
-        var user = userService.userDetailsService().loadUserByUsername(signInRequest.getUsername());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, signInRequest.getPassword()));
+
+        var user = userService.userDetailsService().loadUserByUsername(username);
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);

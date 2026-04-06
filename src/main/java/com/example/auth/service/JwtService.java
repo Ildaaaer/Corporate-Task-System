@@ -3,9 +3,9 @@ import com.example.auth.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.*;
+import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Value;
 
 
@@ -22,6 +22,7 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${token.signing.key}")
     private String token;
+    private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -53,7 +54,7 @@ public class JwtService {
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -72,8 +73,7 @@ public class JwtService {
     }
 
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(token);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(token.getBytes(StandardCharsets.UTF_8));
     }
 
 

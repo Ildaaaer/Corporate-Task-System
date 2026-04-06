@@ -1,12 +1,12 @@
 package com.example.auth.exceptions;
 
 import lombok.extern.log4j.Log4j2;
-import org.apache.coyote.BadRequestException;
-import org.springframework.data.crossstore.ChangeSetPersister;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.core.AuthenticationException;
 
 @ControllerAdvice
 @Log4j2
@@ -33,7 +33,7 @@ public class CustomExceptionHandler {
                         .errorDescription(ex.getMessage())
                         .build());
     }
-    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorDTO> NotFoundException(Exception ex) {
         log.error("Not found", ex);
         return ResponseEntity
@@ -41,6 +41,16 @@ public class CustomExceptionHandler {
                 .body(ErrorDTO.builder()
                         .error("Not found")
                         .errorDescription(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorDTO> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorDTO.builder()
+                        .error("Unauthorized")
+                        .errorDescription("Invalid username or password")
                         .build());
     }
 

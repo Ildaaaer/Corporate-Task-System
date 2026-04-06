@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 123
-    url: jdbc:postgresql://localhost:5432/ToDo
+    url: jdbc:postgresql://localhost:5432/AuthToDO
   jpa:
     hibernate:
       ddl-auto: create-drop
