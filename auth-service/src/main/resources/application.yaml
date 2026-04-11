@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/AuthToDO}
+    username: ${AUTH_DB_USERNAME:postgres}
+    password: ${AUTH_DB_PASSWORD:123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: ${AUTH_SERVICE_PORT:8081}
+
+jwt:
+  signing-key: ${JWT_SIGNING_KEY:a8F2kLm9QwX7zP4nR1vB6cD3yT5uH8jK2mN0sE4rW9xC6qZ1}
+  access-expiration-ms: ${JWT_ACCESS_EXPIRATION_MS:900000}
+  refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}

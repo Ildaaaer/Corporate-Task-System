@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: task-service
+  datasource:
+    url: ${TASK_DB_URL:jdbc:postgresql://localhost:5432/task_db}
+    username: ${TASK_DB_USERNAME:postgres}
+    password: ${TASK_DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+server:
+  port: ${TASK_SERVICE_PORT:8083}
