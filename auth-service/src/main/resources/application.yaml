@@ -8,8 +8,13 @@ spring:
     password: ${AUTH_DB_PASSWORD:123}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: ${AUTH_SERVICE_PORT:8081}
@@ -18,3 +23,8 @@ jwt:
   signing-key: ${JWT_SIGNING_KEY:a8F2kLm9QwX7zP4nR1vB6cD3yT5uH8jK2mN0sE4rW9xC6qZ1}
   access-expiration-ms: ${JWT_ACCESS_EXPIRATION_MS:900000}
   refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
+
+app:
+  kafka:
+    topics:
+      user-registered: user.registered

@@ -15,6 +15,7 @@ spring:
     console:
       enabled: false
 
-token:
-  signing:
-    key: test-signing-key-test-signing-key-123456
+jwt:
+  signing-key: test-signing-key-test-signing-key-123456
+  access-expiration-ms: 900000
+  refresh-expiration-ms: 604800000

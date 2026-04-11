@@ -43,6 +43,8 @@ public class AuthService {
                 .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.EMPLOYEE)
+                .enabled(true)
+                .accountNonLocked(true)
                 .build();
 
         AuthUser savedUser = authUserService.createUser(userToCreate);

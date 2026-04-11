@@ -27,29 +27,34 @@ public class AuthUser implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 32)
     private Role role;
 
-    @JsonProperty("created_At")
+    @Builder.Default
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
+
+    @Builder.Default
+    @Column(name = "account_non_locked", nullable = false)
+    private boolean accountNonLocked = true;
+
     @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated_At")
     @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    private Boolean enabled =  true;
-
-    private Boolean accountNonLocked;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -73,7 +78,7 @@ public class AuthUser implements UserDetails{
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
@@ -83,6 +88,6 @@ public class AuthUser implements UserDetails{
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
