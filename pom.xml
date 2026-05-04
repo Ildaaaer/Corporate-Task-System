@@ -24,6 +24,7 @@
         <module>auth-service</module>
         <module>user-service</module>
         <module>task-service</module>
+        <module>taskService</module>
         <module>notification-service</module>
         <module>api-gateway</module>
     </modules>

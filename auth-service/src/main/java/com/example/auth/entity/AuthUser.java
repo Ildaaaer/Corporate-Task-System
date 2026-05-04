@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "users")
+@Table(name = "auth_users")
 public class AuthUser implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

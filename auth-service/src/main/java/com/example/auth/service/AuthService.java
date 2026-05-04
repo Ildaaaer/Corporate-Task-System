@@ -9,7 +9,9 @@ import com.example.auth.entity.AuthUser;
 import com.example.auth.entity.RefreshToken;
 import com.example.auth.entity.Role;
 import com.example.auth.exceptions.BadRequestException;
+import com.example.events.user.UserRegisteredEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -30,6 +32,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
@@ -48,6 +51,8 @@ public class AuthService {
                 .build();
 
         AuthUser savedUser = authUserService.createUser(userToCreate);
+        publishUserRegisteredEvent(savedUser);
+
         return issueTokenPair(savedUser);
     }
 
@@ -135,5 +140,17 @@ public class AuthService {
 
     private String normalizeToken(String token) {
         return token == null ? null : token.trim();
+    }
+
+    private void publishUserRegisteredEvent(AuthUser user) {
+        UserRegisteredEvent event = new UserRegisteredEvent(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole().name(),
+                Instant.now()
+        );
+
+        applicationEventPublisher.publishEvent(event);
     }
 }
